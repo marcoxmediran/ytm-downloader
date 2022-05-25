@@ -1,6 +1,6 @@
 # requires youtube-dl, ffmpeg, and curl installed locally
 
-import subprocess
+from subprocess import getoutput
 from os import system
 
 def main():
@@ -8,7 +8,7 @@ def main():
     ID = LINK[35:46]
 
     # download song and save name
-    NAME = subprocess.getoutput("youtube-dl --restrict-filenames --get-filename --no-playlist -o '%(title)s' " + LINK)
+    NAME = getoutput("youtube-dl --restrict-filenames --get-filename --no-playlist -o '%(title)s' " + LINK)
     system("youtube-dl -q -x --restrict-filenames --audio-format mp3 --audio-quality 0 --add-metadata --no-playlist -o '~/music/%(title)s.%(ext)s' " + LINK)
 
     # download album art
