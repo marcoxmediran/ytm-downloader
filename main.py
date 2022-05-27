@@ -1,4 +1,4 @@
-# requires youtube-dl, ffmpeg, and curl installed locally
+# requires playerctl, youtube-dl, ffmpeg, and curl installed locally
 
 from subprocess import getoutput
 from os import system
@@ -16,11 +16,11 @@ def main():
     system("curl -s " + IMG)
 
     # crop image
-    system("ffmpeg -hide_banner -i ~/music/art.png -vf crop=720:720:280:0 ~/music/crop.png")
+    system("ffmpeg -loglevel 8 -i ~/music/art.png -vf crop=720:720:280:0 ~/music/crop.png")
 
     # add album art
     system("mv ~/music/" + NAME + ".mp3 ~/music/raw.mp3")
-    system("ffmpeg -hide_banner -i ~/music/raw.mp3 -i ~/music/crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' ~/music/new.mp3")
+    system("ffmpeg -loglevel 8 -i ~/music/raw.mp3 -i ~/music/crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' ~/music/new.mp3")
 
     # cleanup
     system("mv ~/music/new.mp3 ~/music/" + NAME + ".mp3")
