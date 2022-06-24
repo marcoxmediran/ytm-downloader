@@ -2,9 +2,15 @@
 
 from subprocess import getoutput
 from os import system
+import sys
 
 def main():
-    LINK = '"' + input("YTM Song Link: ") + '"'
+    arguments = len(sys.argv)
+    if (arguments != 2):
+        print("Usage: python main.py LINK")
+        exit(1)
+    
+    LINK = '"' + sys.argv[1] + '"'
     ID = LINK[35:46]
 
     # download song and save name
