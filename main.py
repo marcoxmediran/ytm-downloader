@@ -1,8 +1,20 @@
-# requires playerctl, youtube-dl, ffmpeg, and curl installed locally
-
-from subprocess import getoutput
 from os import system
 import sys
+import youtube_dl
+
+ydl_opts = {
+    'noplaylist': True,
+    'restrictfilenames': True,
+    'format': 'bestaudio/best',
+    'outtmpl': '%(title)s.%(ext)s',
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '192',
+    },{
+        'key': 'FFmpegMetadata',
+    }]
+}
 
 def main():
     arguments = len(sys.argv)
@@ -10,28 +22,31 @@ def main():
         print("Usage: python main.py LINK")
         exit(1)
     
-    LINK = '"' + sys.argv[1] + '"'
-    ID = LINK[35:46]
+    LINK = sys.argv[1]
+    ID = LINK[34:45]
 
     # download song and save name
-    NAME = getoutput("youtube-dl --restrict-filenames --get-filename --no-playlist -o '%(title)s' " + LINK)
-    system("youtube-dl -q -x --restrict-filenames --audio-format mp3 --audio-quality 0 --add-metadata --no-playlist -o '~/music/%(title)s.%(ext)s' " + LINK)
+    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([LINK])
+        info = ydl.extract_info(LINK, download=False)
+        NAME = ydl.prepare_filename(info)[:-4] + "mp3"
+        print(NAME)
 
     # download album art
-    IMG = '"' + "https://i.ytimg.com/vi_webp/" + ID + "/maxresdefault.webp" + '"' + " --output ~/music/art.png"
+    IMG = '"' + "https://i.ytimg.com/vi_webp/" + ID + "/maxresdefault.webp" + '"' + " --output art.png"
     system("curl -s " + IMG)
 
     # crop image
-    system("ffmpeg -loglevel 8 -i ~/music/art.png -vf crop=720:720:280:0 ~/music/crop.png")
+    system("ffmpeg -loglevel 8 -i art.png -vf crop=720:720:280:0 crop.png")
 
     # add album art
-    system("mv ~/music/" + NAME + ".mp3 ~/music/raw.mp3")
-    system("ffmpeg -loglevel 8 -i ~/music/raw.mp3 -i ~/music/crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' ~/music/new.mp3")
+    system("mv " + NAME + " raw.mp3")
+    system("ffmpeg -loglevel 8 -i raw.mp3 -i crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3")
 
     # cleanup
-    system("mv ~/music/new.mp3 ~/music/" + NAME + ".mp3")
-    system("rm ~/music/raw.mp3")
-    system("rm ~/music/*.png")
+    system("mv new.mp3 ~/music/" + NAME)
+    system("rm raw.mp3")
+    system("rm *.png")
 
     print("Downloaded " + NAME)
 
