@@ -1,8 +1,8 @@
-from os import system
 import sys
-import youtube_dl
+from os import system
+from yt_dlp import YoutubeDL
 
-ydl_opts = {
+opts = {
     'noplaylist': True,
     'restrictfilenames': True,
     'format': 'bestaudio/best',
@@ -26,11 +26,10 @@ def main():
     ID = LINK[34:45]
 
     # download song and save name
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with YoutubeDL(opts) as ydl:
         ydl.download([LINK])
         info = ydl.extract_info(LINK, download=False)
         NAME = ydl.prepare_filename(info)[:-4] + "mp3"
-        print(NAME)
 
     # download album art
     IMG = '"' + "https://i.ytimg.com/vi_webp/" + ID + "/maxresdefault.webp" + '"' + " --output art.png"
