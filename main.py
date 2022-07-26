@@ -31,22 +31,20 @@ def main():
         NAME = ydl.prepare_filename(info)[:-4] + "mp3"
 
     # download album art
-    IMG = '"' + "https://i.ytimg.com/vi_webp/" + ID + "/maxresdefault.webp" + '"' + " --output art.png"
-    system("curl -s " + IMG)
+    system("curl -s 'https://i.ytimg.com/vi_webp/{}/maxresdefault.webp' --output art.png".format(ID))
 
     # crop image
     system("ffmpeg -loglevel 8 -i art.png -vf crop=720:720:280:0 crop.png")
 
     # add album art
-    system("mv " + NAME + " raw.mp3")
-    system("ffmpeg -loglevel 8 -i raw.mp3 -i crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3")
+    system("ffmpeg -loglevel 8 -i {} -i crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
 
     # cleanup
-    system("mv new.mp3 ~/music/" + NAME)
-    system("rm raw.mp3")
+    system("mv new.mp3 ~/music/{}".format(NAME))
+    system("rm {}".format(NAME))
     system("rm *.png")
 
-    print("Downloaded " + NAME)
+    print("Downloaded {}".format(NAME))
 
 if __name__ == "__main__":
     main()
