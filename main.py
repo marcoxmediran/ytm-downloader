@@ -19,16 +19,15 @@ opts = {
 def main():
     arguments = len(sys.argv)
     if (arguments != 2):
-        print("Usage: python main.py LINK")
+        print("Usage: python main.py ID")
         exit(1)
     
-    LINK = sys.argv[1]
-    ID = LINK[34:45]
+    ID = sys.argv[1]
 
     # download song and save name
     with YoutubeDL(opts) as ydl:
-        ydl.download([LINK])
-        info = ydl.extract_info(LINK, download=False)
+        ydl.download([ID])
+        info = ydl.extract_info(ID, download=False)
         NAME = ydl.prepare_filename(info)[:-4] + "mp3"
 
     # download album art
