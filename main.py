@@ -2,6 +2,7 @@ import sys
 import requests
 import os
 from yt_dlp import YoutubeDL
+from PIL import Image
 
 opts = {
     'noplaylist': True,
@@ -39,7 +40,9 @@ def main():
     open("art.jpg","wb").write(art.content)
 
     # crop image
-    os.system("ffmpeg -loglevel 8 -i art.jpg -vf crop=720:720:280:0 crop.jpg")
+    cover = Image.open(r"art.jpg")
+    cover.crop((280, 0, 1000, 720))
+    cover.save("art.jpg")
 
     # add album art
     os.system("ffmpeg -loglevel 8 -i {} -i crop.jpg -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
