@@ -18,12 +18,15 @@ opts = {
 }
 
 def main():
+    # get song link via command line argument
     arguments = len(sys.argv)
     if (arguments != 2):
-        print("Usage: python main.py ID")
+        print("Usage: python main.py LINK")
         exit(1)
-    
-    ID = sys.argv[1]
+
+    # extract song ID from song link
+    LINK = sys.argv[1]
+    ID = LINK[LINK.find('=') + 1:LINK.find('&')]
 
     # download song and save name
     with YoutubeDL(opts) as ydl:
