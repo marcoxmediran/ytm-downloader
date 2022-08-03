@@ -41,16 +41,16 @@ def main():
 
     # crop image
     cover = Image.open(r"art.jpg")
-    cover.crop((280, 0, 1000, 720))
-    cover.save("art.jpg")
+    cover = cover.crop((280, 0, 1000, 720))
+    cover = cover.save("art.jpg")
 
     # add album art
-    os.system("ffmpeg -loglevel 8 -i {} -i crop.jpg -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
+    #os.system("ffmpeg -loglevel 8 -i {} -i crop.jpg -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
 
     # cleanup
-    os.system("mv new.mp3 ~/music/{}".format(NAME))
-    os.system("rm {}".format(NAME))
-    os.system("rm *.jpg")
+    #os.system("mv new.mp3 ~/music/{}".format(NAME))
+    #os.system("rm {}".format(NAME))
+    #os.system("rm *.jpg")
 
     print("Downloaded {}".format(NAME))
 
