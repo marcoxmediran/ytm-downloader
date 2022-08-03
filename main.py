@@ -17,8 +17,6 @@ opts = {
     }]
 }
 
-DIR = "~/music/"
-
 def main():
     arguments = len(sys.argv)
     if (arguments != 2):
