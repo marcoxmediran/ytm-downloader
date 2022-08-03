@@ -1,5 +1,6 @@
 import sys
-from os import system
+import requests
+import os
 from yt_dlp import YoutubeDL
 
 opts = {
@@ -16,6 +17,8 @@ opts = {
     }]
 }
 
+DIR = "~/music/"
+
 def main():
     arguments = len(sys.argv)
     if (arguments != 2):
@@ -31,18 +34,19 @@ def main():
         NAME = ydl.prepare_filename(info)[:-4] + "mp3"
 
     # download album art
-    system("curl -s 'https://i.ytimg.com/vi_webp/{}/maxresdefault.webp' --output art.png".format(ID))
+    art = requests.get('https://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(ID))
+    open("art.jpg","wb").write(art.content)
 
     # crop image
-    system("ffmpeg -loglevel 8 -i art.png -vf crop=720:720:280:0 crop.png")
+    os.system("ffmpeg -loglevel 8 -i art.jpg -vf crop=720:720:280:0 crop.jpg")
 
     # add album art
-    system("ffmpeg -loglevel 8 -i {} -i crop.png -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
+    os.system("ffmpeg -loglevel 8 -i {} -i crop.jpg -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
 
     # cleanup
-    system("mv new.mp3 ~/music/{}".format(NAME))
-    system("rm {}".format(NAME))
-    system("rm *.png")
+    os.system("mv new.mp3 ~/music/{}".format(NAME))
+    os.system("rm {}".format(NAME))
+    os.system("rm *.jpg")
 
     print("Downloaded {}".format(NAME))
 
