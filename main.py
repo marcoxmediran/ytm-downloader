@@ -1,6 +1,6 @@
 import sys
 import requests
-import os
+import eyed3
 from yt_dlp import YoutubeDL
 from PIL import Image
 
@@ -36,16 +36,19 @@ def main():
         NAME = ydl.prepare_filename(info)[:-4] + "mp3"
 
     # download album art
-    art = requests.get('https://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(ID))
-    open("art.jpg","wb").write(art.content)
+    cover = requests.get('https://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(ID))
+    open("cover.jpg","wb").write(cover.content)
 
     # crop image
-    cover = Image.open(r"art.jpg")
+    cover = Image.open(r"cover.jpg")
     cover = cover.crop((280, 0, 1000, 720))
-    cover = cover.save("art.jpg")
+    cover = cover.save("cover.jpg")
 
     # add album art
-    #os.system("ffmpeg -loglevel 8 -i {} -i crop.jpg -map 0:0 -map 1:0 -c copy -id3v2_version 3 -metadata:s:v title='Album Cover' new.mp3".format(NAME))
+    cover = open('cover.jpg', 'rb')
+    song = eyed3.load(NAME)
+    song = song.tag.images.set(3, cover, 'image/jpeg', u'Cover')
+
 
     # cleanup
     #os.system("mv new.mp3 ~/music/{}".format(NAME))
