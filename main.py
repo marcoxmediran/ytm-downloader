@@ -1,8 +1,12 @@
 import sys
-import requests
-import eyed3
-from yt_dlp import YoutubeDL
+from mutagen.mp3 import MP3
+from mutagen.id3 import ID3, APIC, error
+from os import remove
+from os import rename
 from PIL import Image
+from requests import get
+from sys import argv
+from yt_dlp import YoutubeDL
 
 opts = {
     'noplaylist': True,
@@ -17,6 +21,8 @@ opts = {
         'key': 'FFmpegMetadata',
     }]
 }
+
+DOWNLOAD_DIR = '/home/marcox/music/'
 
 def main():
     # get song link via command line argument
@@ -36,7 +42,7 @@ def main():
         NAME = ydl.prepare_filename(info)[:-4] + "mp3"
 
     # download album art
-    cover = requests.get('https://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(ID))
+    cover = get('https://i.ytimg.com/vi/{}/maxresdefault.jpg'.format(ID))
     open("cover.jpg","wb").write(cover.content)
 
     # crop image
@@ -45,15 +51,13 @@ def main():
     cover = cover.save("cover.jpg")
 
     # add album art
-    cover = open('cover.jpg', 'rb')
-    song = eyed3.load(NAME)
-    song = song.tag.images.set(3, cover, 'image/jpeg', u'Cover')
-
+    song = MP3(NAME, ID3 = ID3)
+    song.tags.add(APIC(mime='image/jpeg',type=3,desc=u'Cover',data=open('cover.jpg','rb').read()))
+    song.save()
 
     # cleanup
-    #os.system("mv new.mp3 ~/music/{}".format(NAME))
-    #os.system("rm {}".format(NAME))
-    #os.system("rm *.jpg")
+    remove('cover.jpg')
+    rename(NAME, DOWNLOAD_DIR + NAME)
 
     print("Downloaded {}".format(NAME))
 
