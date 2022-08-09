@@ -2,7 +2,6 @@ import sys
 from mutagen.mp3 import MP3
 from mutagen.id3 import ID3, APIC, error
 from os import remove
-from os import rename
 from PIL import Image
 from requests import get
 from sys import argv
@@ -21,8 +20,6 @@ opts = {
         'key': 'FFmpegMetadata',
     }]
 }
-
-DOWNLOAD_DIR = '/home/marcox/music/'
 
 def main():
     # get song link via command line argument
@@ -57,7 +54,6 @@ def main():
 
     # cleanup
     remove('cover.jpg')
-    rename(NAME, DOWNLOAD_DIR + NAME)
 
     print("Downloaded {}".format(NAME))
 
