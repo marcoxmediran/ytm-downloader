@@ -9,6 +9,11 @@ pip install -r requirements.txt
 ``
 
 ## Usage
+
+``
+python3 main.py LINK
+``
+
 ``
 python3 main.py "https://music.youtube.com/watch?v=VCuDGGy9iiY"
 ``
