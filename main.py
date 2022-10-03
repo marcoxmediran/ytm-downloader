@@ -12,6 +12,7 @@ opts = {
     'restrictfilenames': True,
     'format': 'bestaudio/best',
     'outtmpl': '%(title)s.%(ext)s',
+    'quiet': True,
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
