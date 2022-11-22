@@ -3,19 +3,15 @@
 Download songs from YouTube Music with metadata and album art in seconds!
 
 ## Prerequisites
-
 ``
 pip install -r requirements.txt
 ``
 
-NOTE: `ffmpeg` binary must be installed locally
+`ffmpeg` binary must be installed locally
 
 ## Usage
+``
+python main.py
+``
 
-``
-python main.py LINK
-``
-
-``
-python main.py "https://music.youtube.com/watch?v=VCuDGGy9iiY"
-``
+The program will continuously ask for a link to download until `ctrl + d` is pressed.
