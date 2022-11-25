@@ -15,3 +15,5 @@ python main.py
 ``
 
 The program will continuously ask for a link to download until `ctrl + d` is pressed.
+
+![](https://github.com/marcoxmediran/ytm-downloader/blob/main/demo/demo.gif)
